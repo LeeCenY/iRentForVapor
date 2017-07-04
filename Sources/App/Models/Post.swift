@@ -5,29 +5,29 @@ import HTTP
 final class Post: Model {
     let storage = Storage()
     
-    // MARK: Properties and database keys
+    // MARK: 属性和数据库键
     
-    /// The content of the post
+    /// post内容
     var content: String
     
-    /// The column names for `id` and `content` in the database
+    /// 数据库中id 和内容的列表名
     static let idKey = "id"
     static let contentKey = "content"
 
-    /// Creates a new Post
+    /// 创建新的post
     init(content: String) {
         self.content = content
     }
 
-    // MARK: Fluent Serialization
+    // MARK: 初始化
 
-    /// Initializes the Post from the
+    /// 初始化 post
     /// database row
     init(row: Row) throws {
         content = try row.get(Post.contentKey)
     }
 
-    // Serializes the Post to the database
+    // 将posth初始化到数据库
     func makeRow() throws -> Row {
         var row = Row()
         try row.set(Post.contentKey, content)
@@ -35,7 +35,7 @@ final class Post: Model {
     }
 }
 
-// MARK: Fluent Preparation
+// MARK: Fluent 准备
 
 extension Post: Preparation {
     /// Prepares a table/collection in the database
@@ -77,21 +77,19 @@ extension Post: JSONConvertible {
 
 // MARK: HTTP
 
-// This allows Post models to be returned
+// 返回post模型
 // directly in route closures
 extension Post: ResponseRepresentable { }
 
 // MARK: Update
 
-// This allows the Post model to be updated
-// dynamically by the request.
+// 这样可以更新Post模型
+// 根据请求动态
 extension Post: Updateable {
-    // Updateable keys are called when `post.update(for: req)` is called.
-    // Add as many updateable keys as you like here.
+   
     public static var updateableKeys: [UpdateableKey<Post>] {
         return [
-            // If the request contains a String at key "content"
-            // the setter callback will be called.
+
             UpdateableKey(Post.contentKey, String.self) { post, content in
                 post.content = content
             }
